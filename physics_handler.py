@@ -10,7 +10,7 @@ class Handler:
     def __init__(self, fps=30, screen_size=None, border=False):
         self.running = True
         self.framerate = fps
-        self.objs = []
+        self.objs = object.ObjGroup()
 
         if screen_size:
             self.screen_size = screen_size
@@ -27,7 +27,7 @@ class Handler:
 
         self.border = border
         for i in range(10):
-            self.objs.append(object.Object(pos=(0, self.screen_size[1]-1), vel=(3, random.randint(-15, 0)), acc=(0, 3)))
+            self.objs.add(object.Object(pos=(0, self.screen_size[1]-1), vel=(3, random.randint(-15, 0)), acc=(0, 3)))
         self.r = Renderer(self.screen_size, border)
 
     def main_loop(self):
@@ -35,8 +35,8 @@ class Handler:
             time_init = time.time()  # time at start of frame
 
             self.r.render()
-            self.object_handler()
             # self.r.draw_pixel((1, 1), "h")
+            self.object_handler()
 
             diff = time.time() - time_init  # elapsed time
             sleep_time = (1 / self.framerate) - diff  # wait time to meet framerate
@@ -44,9 +44,11 @@ class Handler:
                 time.sleep(sleep_time)
 
     def object_handler(self):
-        for obj in self.objs:
-            self.r.draw_pixel(obj.pos(), "h")
+        for obj in self.objs.list():
+            self.r.draw_pixel(obj.pos(), "o")
             obj.update(10)
+
+        # print(len(self.objs.list()))
 
 
 class Renderer:
