@@ -6,9 +6,9 @@ import os
 class Main:
     def __init__(self):
         self.running = True
-        self.framerate = 10
+        self.framerate = 60
         self.time_grain = 20
-        self.r = Renderer((90, 25), (6, 6))
+        self.r = Renderer((78, 22), (6, 6))
         self.obj1 = object.Object(vel=(20, 10), acc=(0, -3))
         self.obj2 = object.Object(vel=(15, 7), acc=(0, -3), char="o")
         self.objs = [self.obj1, self.obj2]
