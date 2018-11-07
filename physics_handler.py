@@ -4,12 +4,15 @@ import time
 import subprocess
 import object
 import random
+import string
+import keyboard
 
 
 class Handler:
-    def __init__(self, fps=30, screen_size=None, border=False):
+    def __init__(self, fps=30, grain=10, screen_size=None, border=False):
         self.running = True
         self.framerate = fps
+        self.grain = grain
         self.objs = object.ObjGroup()
 
         if screen_size:
@@ -26,8 +29,8 @@ class Handler:
         self.screen_size[1] -= 1
 
         self.border = border
-        for i in range(10):
-            self.objs.add(object.Object(pos=(0, self.screen_size[1]-1), vel=(3, random.randint(-15, 0)), acc=(0, 3)))
+        for i in range(2):
+            self.objs.add(object.Object(pos=(random.randint(0, self.screen_size[0]-1), random.randint(0,self.screen_size[1]-1)), vel=(random.uniform(-10, 10), random.uniform(-10, 10)), acc=(0, 3), char=random.choice(string.ascii_letters)))
         self.r = Renderer(self.screen_size, border)
 
     def main_loop(self):
@@ -45,8 +48,13 @@ class Handler:
 
     def object_handler(self):
         for obj in self.objs.list():
-            self.r.draw_pixel(obj.pos(), "o")
-            obj.update(10)
+            self.r.draw_pixel(obj.pos(), obj.char)
+            obj.update(self.grain, self.screen_size)
+            # print(abs(obj.vy))
+            # print(obj.x, obj.y)
+            # print(obj.pos())
+            # print(obj.vx, obj.vy)
+            # print(self.screen_size)
 
         # print(len(self.objs.list()))
 
@@ -90,7 +98,7 @@ class Renderer:
         if type(coords) == tuple:  # support for single coordinate
             coords = [coords]
         for px in coords:
-            if 0 < px[0] < self.size[0] and 0 < px[1] < self.size[1]:  # render only within frame
+            if 0 <= px[0] < self.size[0] and 0 <= px[1] < self.size[1]:  # render only within frame
                 self.disp[px[1]][px[0]] = value
 
     def clear_disp(self):
